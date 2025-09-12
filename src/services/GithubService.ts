@@ -8,7 +8,7 @@ const octokit = new Octokit({
     auth: ghToken,
 });
 
-export async function getDiff(owner: string, repo: string, pullNumber: number) {
+export async function getDiff(owner: string, repo: string, pullNumber: number): Promise<any> {
     return await octokit.request(
         "GET " + GITHUB_API_PR_URL,
         {
@@ -20,7 +20,7 @@ export async function getDiff(owner: string, repo: string, pullNumber: number) {
     );
 }
 
-export async function getCommits(owner: string, repo: string, pullNumber: number) {
+export async function getCommits(owner: string, repo: string, pullNumber: number): Promise<any> {
     return await octokit.request(
         "GET " + GITHUB_API_COMMIT_URL,
         {
@@ -41,7 +41,7 @@ export async function postApproveReviewComment(
     pullNumber: number,
     body: string,
     commitId: string
-) {
+): Promise<any> {
     return await octokit.request(
         "POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews",
         {
