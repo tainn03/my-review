@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "start": "node ./dist/index.js",
+    "start": "node --env-file=.env ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,9 +22,13 @@
   },
   "homepage": "https://github.com/tainn03/my-review#readme",
   "devDependencies": {
+    "@types/node": "^24.3.1",
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.1",
+    "@google/genai": "^1.19.0",
     "octokit": "^5.0.3"
   }
 }
