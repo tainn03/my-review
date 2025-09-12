@@ -1,0 +1,25 @@
+name: "AI Code Review Action"
+description: "AI-powered code review for pull requests"
+inputs:
+  github_token:
+    description: "GitHub Token"
+    required: true
+  gemini_api_key:
+    description: "Gemini API Key"
+    required: true
+  model:
+    description: "Gemini Model (e.g., gemini-1.5-pro)"
+    required: true
+    default: "gemini-1.5-pro"
+  owner:
+    description: "Repository owner"
+    required: true
+  repo:
+    description: "Repository name"
+    required: true
+  pull_number:
+    description: "Pull request number"
+    required: true
+runs:
+  using: "node20"
+  main: "dist/index.js"
