@@ -12,7 +12,7 @@ jobs:
       - name: Run review in Docker container
         run: |
           docker run --rm \
-            -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            -e INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             -e INPUT_GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
             -e INPUT_MODEL=gemini-1.5-flash \
             -e INPUT_OWNER=${{ github.repository_owner }} \
