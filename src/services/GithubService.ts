@@ -1,5 +1,4 @@
 import * as core from "@actions/core";
-import * as github from "@actions/github";
 import { Octokit } from "octokit";
 import { GITHUB_API_COMMIT_URL, GITHUB_API_PR_URL } from "../constants/UrlConstant.js";
 
