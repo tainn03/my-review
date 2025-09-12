@@ -27,10 +27,6 @@ export async function getCommits(owner: string, repo: string, pullNumber: number
             owner,
             repo,
             pull_number: pullNumber,
-            headers: {
-                "X-GitHub-Api-Version": "2022-11-28",
-                "Accept": "application/vnd.github.full+json",
-            },
         }
     );
 }
