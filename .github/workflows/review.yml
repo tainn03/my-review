@@ -1,4 +1,4 @@
-name: AI Code Review
+name: Pull and Review
 on:
   pull_request:
     types: [opened, synchronize, reopened]
