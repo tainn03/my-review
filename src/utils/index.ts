@@ -26,43 +26,48 @@ ${diff}
 export const generateCommentBody = (c: ReviewComment) => {
     let body = `
 > My Review ✨
+> Level: **${c.category}**
 
 ## 📝 Summary
 
 ${c.summary}
+`;
 
+    if (c.category !== "LGTM ✅") {
+        body += `
 ### 🛠️ Code Review Feedback
 
-| Issue                           | Suggestion |
+| Vấn đề                           | Đề xuất |
 | ------------------------------- | ---------- |
 | ${c.issues?.[0] ? `**${c.issues[0]}**` : ""} | ${c.suggestions?.[0] ?? ""} |
 `;
 
-    // Add additional issues/suggestions if present
-    if ((c.issues?.length ?? 0) > 1 || (c.suggestions?.length ?? 0) > 1) {
-        for (
-            let i = 1;
-            i < Math.max(c.issues?.length ?? 0, c.suggestions?.length ?? 0);
-            i++
-        ) {
-            const issue = c.issues?.[i] ?? "";
-            const solution = c.suggestions?.[i] ?? "";
-            body += `| ${issue} | ${solution} |\n`;
+        // Add additional issues/suggestions if present
+        if ((c.issues?.length ?? 0) > 1 || (c.suggestions?.length ?? 0) > 1) {
+            for (
+                let i = 1;
+                i < Math.max(c.issues?.length ?? 0, c.suggestions?.length ?? 0);
+                i++
+            ) {
+                const issue = c.issues?.[i] ?? "";
+                const solution = c.suggestions?.[i] ?? "";
+                body += `| ${issue} | ${solution} |\n`;
+            }
         }
-    }
 
-    body += `
+        body += `
 
 ---
 
 ## 📢 Next Steps
 
-- Address the issues above and push updates to this PR.
-- If you disagree with any suggestions, let us know in a reply!
-- Once all issues are resolved, we can proceed to merge the PR. 🎉
+- Giải quyết các vấn đề được nêu trên và push lên nhánh của bạn.
+- Nếu bạn không đồng ý với bất kỳ đề xuất nào, hãy reply vào comment này.
+- Khi tất cả các vấn đề được giải quyết, chúng ta có thể tiến hành merge PR. 🎉
 
-> **🎈Note:** This is an automated review. Please verify suggestions before applying. If you have questions, reply to this comment.
+> **🎈Lưu ý:** Đây là bot review tự động. Vui lòng xác minh trước khi làm theo. Mọi thông tin mà AI phản hồi đều chỉ mang tính chất tham khảo.
 `;
+    }
 
     return body;
 };

@@ -10,10 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Build Docker image
-        run: docker build -t my-review .
-      - name: Run review in Docker container
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/my-review:latest .
+      - name: Push Docker image to registry
+        run: docker push ghcr.io/${{ github.repository_owner }}/my-review:latest
+      - name: Pull and run review in Docker container
         run: |
+          docker pull ghcr.io/${{ github.repository_owner }}/my-review:latest
           docker run --rm \
             -e INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             -e INPUT_GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
@@ -21,5 +26,4 @@ jobs:
             -e INPUT_OWNER=${{ github.repository_owner }} \
             -e INPUT_REPO=${{ github.event.repository.name }} \
             -e INPUT_PULL_NUMBER=${{ github.event.pull_request.number }} \
-            my-review
-            my-review
+            ghcr.io/${{ github.repository_owner }}/my-review:latest
