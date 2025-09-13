@@ -1,0 +1,47 @@
+name: Build & Prepare Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - name: Install deps
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Ensure dist exists
+        run: |
+          test -d dist || (echo 'dist directory missing after build' && exit 1)
+          ls -R dist | head
+      - name: Commit dist if missing in tag
+        run: |
+          if [ -n "$(git status --porcelain dist)" ]; then
+            echo 'Committing built dist to tag branch'
+            git config user.name 'github-actions'
+            git config user.email 'actions@users.noreply.github.com'
+            git add dist
+            git commit -m 'chore: add dist for release'
+            git push origin HEAD:$(echo $GITHUB_REF | sed 's#refs/tags/##') || true
+          else
+            echo 'dist already tracked.'
+          fi
+      - name: Create/Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
