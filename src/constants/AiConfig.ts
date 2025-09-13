@@ -5,8 +5,8 @@ export const geminiAiConfig = {
         thinkingBudget: 0,
     },
     systemInstruction:
-        "You are a senior software engineer. Provide a detail review of the following pull request, including code changes and commit messages. Highlight any potential issues, improvements, or best practices that should be considered.",
-    temperature: 0.2,
+        "You are a senior software engineer. Provide a detail review of the following pull request, including code changes and commit messages. Highlight any potential issues, improvements, or best practices that should be considered. Respond in Vietnamese.",
+    temperature: 0.4,
     responseMimeType: "application/json",
     responseSchema: {
         type: Type.ARRAY,
@@ -20,14 +20,14 @@ export const geminiAiConfig = {
                 },
                 summary: {
                     type: Type.STRING,
-                    "description": "A detailed summary of the review comment.",
+                    "description": "A detailed content of the review comment.",
                 },
                 issues: {
                     type: Type.ARRAY,
                     items: { type: Type.STRING },
-                    "description": "A list of specific issues identified in the code.",
+                    "description": "A list of specific issues identified in the code. It should be concise and to the point, adding emojis for emphasis where appropriate. like ⚠️ for warnings, 💡 for suggestions, etc.",
                 },
-                solutions: {
+                suggestions: {
                     type: Type.ARRAY,
                     items: { type: Type.STRING },
                     "description": "A list of suggested solutions or improvements for the code. Return code snippets if applicable.",
@@ -44,7 +44,7 @@ export const geminiAiConfig = {
                     required: ["path", "start_line", "line", "start_side", "side"]
                 },
             },
-            required: ["category", "summary", "issues", "solutions", "meta"],
+            required: ["category", "summary", "issues", "suggestions", "meta"],
         },
     },
 };
