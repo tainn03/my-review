@@ -1,4 +1,4 @@
-name: "my-review"
+name: "tainn03:my-review"
 description: "AI-powered code review for pull requests"
 inputs:
   github_token:
