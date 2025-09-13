@@ -15,7 +15,7 @@ export const geminiAiConfig = {
             properties: {
                 category: {
                     type: Type.STRING,
-                    enum: ["SUGGESTION 🟦", "MINOR 🟨", "MAJOR 🟧", "CRITICAL 🟥", "LGTM ✅"],
+                    enum: ["SUGGESTION 🟦", "WARNING 🟨", "ERROR 🟥", "LGTM ✅"],
                     description: "The review category indicating the severity or approval level of the comment. 'LGTM ✅' indicates no changes needed, just use if everything looks good and no issues found.",
                 },
                 summary: {
@@ -28,7 +28,7 @@ export const geminiAiConfig = {
                 },
                 suggestions: {
                     type: Type.STRING,
-                    description: "A list of suggested solutions or improvements and code snippets if applicable. Add emoji 💡 in the first line of every suggestion.",
+                    description: "A list of suggested solutions or improvements for code. Add emoji 💡 in the first line of every suggestion.",
                 },
                 meta: {
                     type: Type.OBJECT,
