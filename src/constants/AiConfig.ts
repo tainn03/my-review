@@ -4,9 +4,6 @@ import { Type } from "@google/genai";
  * Configuration for Gemini AI model
  */
 export const geminiAiConfig = {
-    thinkingConfig: {
-        thinkingBudget: 0,
-    },
     systemInstruction:
         "You are a senior software engineer. Provide a detail review of the following pull request, including code changes and commit messages. Highlight any potential issues, improvements, or best practices that should be considered. Respond in Vietnamese.",
     temperature: 0.4,
@@ -18,7 +15,7 @@ export const geminiAiConfig = {
             properties: {
                 category: {
                     type: Type.STRING,
-                    enum: ["SUGGESTION 🔵", "MINOR 🟡", "MAJOR 🟠", "CRITICAL 🔴", "LGTM ✅"],
+                    enum: ["SUGGESTION 🟦", "MINOR 🟨", "MAJOR 🟧", "CRITICAL 🟥", "LGTM ✅"],
                     description: "The review category indicating the severity or approval level of the comment. 'LGTM ✅' indicates no changes needed, just use if everything looks good and no issues found.",
                 },
                 summary: {
@@ -26,14 +23,12 @@ export const geminiAiConfig = {
                     description: "A detailed content of the review comment.",
                 },
                 issues: {
-                    type: Type.ARRAY,
-                    items: { type: Type.STRING },
-                    description: "A list of specific issues identified in the code. It should be concise and to the point, adding emojis for emphasis where appropriate. like ⚠️ for warnings, 💡 for suggestions, etc.",
+                    type: Type.STRING,
+                    description: "A list of specific issues identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.",
                 },
                 suggestions: {
-                    type: Type.ARRAY,
-                    items: { type: Type.STRING },
-                    description: "A list of suggested solutions or improvements for the code. Return code snippets if applicable.",
+                    type: Type.STRING,
+                    description: "A list of suggested solutions or improvements and code snippets if applicable. Add emoji 💡 in the first line of every suggestion.",
                 },
                 meta: {
                     type: Type.OBJECT,

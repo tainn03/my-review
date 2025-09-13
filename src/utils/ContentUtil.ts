@@ -41,28 +41,21 @@ export const generateCommentBody = (comment: ReviewComment) => {
     let body = `
 > **${comment.category}**
 
-## 📝 Summary
+## 📌 Summary
 
 ${comment.summary}
 `;
 
     if (comment.category !== "LGTM ✅") {
-        const issues = comment.issues ?? [];
-        const suggestions = comment.suggestions ?? [];
-        const maxLen = Math.max(issues.length, suggestions.length);
-
-        const tableRows = Array.from({ length: maxLen }).map((_, i) => {
-            const issue = issues[i] ? `**⚠️ ${issues[i]}**` : "";
-            const suggestion = suggestions[i] ? `**💡 ${suggestions[i]}**` : "";
-            return `| ${issue} | ${suggestion} |`;
-        }).join("\n");
+        const issueCell = comment.issues ?? "";
+        const suggestionCell = comment.suggestions ?? "";
 
         body += `
-### 🛠️ Code Review Feedback
+### 🔑 Code Review Feedback
 
 | Issue                           | Suggestion |
 | ------------------------------- | ---------- |
-${tableRows}
+| ${issueCell} | ${suggestionCell} |
 
 ---
 
@@ -70,10 +63,10 @@ ${tableRows}
 <summary>📢 Next Steps</summary>
 
 - Giải quyết các vấn đề được nêu trên và push lên nhánh của bạn.
-- Nếu bạn không đồng ý với bất kỳ đề xuất nào, hãy reply vào comment này.
-- Khi tất cả các vấn đề được giải quyết, chúng ta có thể tiến hành merge PR. 🎉
+- Nếu bạn không đồng ý với bất kỳ đề xuất nào, hãy chọn **Resolve conversation**.
+- Sau khi tất cả các comment được giải quyết, hãy merge pull request của bạn 🎉
 
-> **🎈Lưu ý:** Đây là bot review tự động. Vui lòng xác minh trước khi làm theo. Mọi thông tin mà AI phản hồi đều chỉ mang tính chất tham khảo.
+> **🚀 Lưu ý:** Đây là bot review tự động. Vui lòng xác minh trước khi làm theo. Mọi thông tin mà AI phản hồi đều chỉ mang tính chất tham khảo.
 
 </details>
 `;
