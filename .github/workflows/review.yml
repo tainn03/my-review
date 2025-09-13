@@ -20,22 +20,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository }}/my-review:latest .
-
-      - name: Tag Docker image with version
-        run: docker tag ghcr.io/${{ github.repository }}/my-review:latest ghcr.io/${{ github.repository }}/my-review:${{ github.sha }}
-
-      - name: Push Docker image with version
-        run: docker push ghcr.io/${{ github.repository }}/my-review:${{ github.sha }}
-
-      - name: Push Docker image with latest tag
-        run: docker push ghcr.io/${{ github.repository }}/my-review:latest
-
-      - name: Pull and run review in Docker container
+      - name: Run review code in Docker container
         run: |
           set -e
-          docker pull ghcr.io/${{ github.repository }}/my-review:latest
+          docker pull ghcr.io/tainn03/my-review:latest
           docker run --rm \
             -e INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             -e INPUT_GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
@@ -43,4 +31,4 @@ jobs:
             -e INPUT_OWNER=${{ github.repository_owner }} \
             -e INPUT_REPO=${{ github.event.repository.name }} \
             -e INPUT_PULL_NUMBER=${{ github.event.pull_request.number }} \
-            ghcr.io/${{ github.repository }}/my-review:latest
+            ghcr.io/tainn03/my-review:latest
