@@ -1,15 +1,19 @@
-name: AI Code Review
+name: Pull and Review
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 permissions:
   contents: read
   pull-requests: write
+  packages: write
 jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - name: Run review code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run review code in Docker container
         run: |
           set -e
           docker pull ghcr.io/tainn03/my-review:latest
