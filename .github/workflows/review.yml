@@ -10,28 +10,32 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Log in to GHCR
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository_owner }}/my-review:latest .
+        run: docker build -t ghcr.io/${{ github.repository }}/my-review:latest .
 
       - name: Tag Docker image with version
-        run: docker tag ghcr.io/${{ github.repository_owner }}/my-review:latest ghcr.io/${{ github.repository_owner }}/my-review:${{ github.sha }}
+        run: docker tag ghcr.io/${{ github.repository }}/my-review:latest ghcr.io/${{ github.repository }}/my-review:${{ github.sha }}
 
       - name: Push Docker image with version
-        run: docker push ghcr.io/${{ github.repository_owner }}/my-review:${{ github.sha }}
+        run: docker push ghcr.io/${{ github.repository }}/my-review:${{ github.sha }}
 
       - name: Push Docker image with latest tag
-        run: docker push ghcr.io/${{ github.repository_owner }}/my-review:latest
+        run: docker push ghcr.io/${{ github.repository }}/my-review:latest
 
       - name: Pull and run review in Docker container
         run: |
-          docker pull ghcr.io/${{ github.repository_owner }}/my-review:latest
+          set -e
+          docker pull ghcr.io/${{ github.repository }}/my-review:latest
           docker run --rm \
             -e INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             -e INPUT_GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
@@ -39,4 +43,4 @@ jobs:
             -e INPUT_OWNER=${{ github.repository_owner }} \
             -e INPUT_REPO=${{ github.event.repository.name }} \
             -e INPUT_PULL_NUMBER=${{ github.event.pull_request.number }} \
-            ghcr.io/${{ github.repository_owner }}/my-review:latest
+            ghcr.io/${{ github.repository }}/my-review:latest
