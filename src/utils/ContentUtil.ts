@@ -9,6 +9,7 @@ export const generatePullRequestReview = (
     diff: string
 ) => `You are a senior engineer code reviewer.
 Return ONLY a valid JSON array (no markdown, no backticks, no explanations).
+Responsed in Vietnamese.
 Each element must follow:
 {
   "category": "SUGGESTION 🔵" | "MINOR 🟡" | "MAJOR 🟠" | "CRITICAL 🔴" | "LGTM ✅",
@@ -38,7 +39,7 @@ ${diff}
  */
 export const generateCommentBody = (comment: ReviewComment) => {
     let body = `
-> Level: **${comment.category}**
+> **${comment.category}**
 
 ## 📝 Summary
 
@@ -46,38 +47,35 @@ ${comment.summary}
 `;
 
     if (comment.category !== "LGTM ✅") {
+        const issues = comment.issues ?? [];
+        const suggestions = comment.suggestions ?? [];
+        const maxLen = Math.max(issues.length, suggestions.length);
+
+        const tableRows = Array.from({ length: maxLen }).map((_, i) => {
+            const issue = issues[i] ? `**⚠️ ${issues[i]}**` : "";
+            const suggestion = suggestions[i] ? `**💡 ${suggestions[i]}**` : "";
+            return `| ${issue} | ${suggestion} |`;
+        }).join("\n");
+
         body += `
 ### 🛠️ Code Review Feedback
 
 | Issue                           | Suggestion |
 | ------------------------------- | ---------- |
-| ${comment.issues?.[0] ? `**${comment.issues[0]}**` : ""} | ${comment.suggestions?.[0] ?? ""} |
-`;
-
-        // Add additional issues/suggestions if present
-        if ((comment.issues?.length ?? 0) > 1 || (comment.suggestions?.length ?? 0) > 1) {
-            for (
-                let i = 1;
-                i < Math.max(comment.issues?.length ?? 0, comment.suggestions?.length ?? 0);
-                i++
-            ) {
-                const issue = comment.issues?.[i] ?? "";
-                const solution = comment.suggestions?.[i] ?? "";
-                body += `| ${issue} | ${solution} |\n`;
-            }
-        }
-
-        body += `
+${tableRows}
 
 ---
 
-## 📢 Next Steps
+<details>
+<summary>📢 Next Steps</summary>
 
 - Giải quyết các vấn đề được nêu trên và push lên nhánh của bạn.
 - Nếu bạn không đồng ý với bất kỳ đề xuất nào, hãy reply vào comment này.
 - Khi tất cả các vấn đề được giải quyết, chúng ta có thể tiến hành merge PR. 🎉
 
 > **🎈Lưu ý:** Đây là bot review tự động. Vui lòng xác minh trước khi làm theo. Mọi thông tin mà AI phản hồi đều chỉ mang tính chất tham khảo.
+
+</details>
 `;
     }
 
