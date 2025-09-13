@@ -5,7 +5,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  packages: write
+  packages: read
 jobs:
   review:
     runs-on: ubuntu-latest

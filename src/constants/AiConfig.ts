@@ -1,5 +1,8 @@
 import { Type } from "@google/genai";
 
+/**
+ * Configuration for Gemini AI model
+ */
 export const geminiAiConfig = {
     thinkingConfig: {
         thinkingBudget: 0,
@@ -15,7 +18,7 @@ export const geminiAiConfig = {
             properties: {
                 category: {
                     type: Type.STRING,
-                    enum: ["LOW 🔵", "MEDIUM 🟡", "HIGH 🟠", "CRITICAL 🔴", "LGTM ✅"],
+                    enum: ["SUGGESTION 🔵", "MINOR 🟡", "MAJOR 🟠", "CRITICAL 🔴", "LGTM ✅"],
                     "description": "The review category indicating the severity or approval level of the comment. 'LGTM ✅' indicates no changes needed, just use if everything looks good and no issues found.",
                 },
                 summary: {
