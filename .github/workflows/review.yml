@@ -1,0 +1,34 @@
+name: AI Code Review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+  pull-requests: write
+  packages: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run review code in Docker container
+        run: |
+          set -e
+          docker pull ghcr.io/tainn03/my-review:latest
+          docker run --rm \
+            -e INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            -e INPUT_GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
+            -e INPUT_MODEL=gemini-1.5-flash \
+            -e INPUT_OWNER=${{ github.repository_owner }} \
+            -e INPUT_REPO=${{ github.event.repository.name }} \
+            -e INPUT_PULL_NUMBER=${{ github.event.pull_request.number }} \
+            ghcr.io/tainn03/my-review:latest
