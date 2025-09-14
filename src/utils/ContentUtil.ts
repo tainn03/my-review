@@ -24,7 +24,7 @@ Responded in Vietnamese and respond in JSON format with the following schema:
     - start_side: The starting side of the code being reviewed (LEFT or RIGHT).
 
 If there are multiple comments, return an array of objects.
-If everything is fine, return a single object with category "LGTM ✅".
+If everything is fine, return a single object with category "LGTM ✅" with summary "Looks good to me, no issues found." and empty other fields.
 
 Now review this diff:
 ${diff}
@@ -60,13 +60,13 @@ ${comment.summary}
         if (comment?.feedback?.length === 0) {
             const issueCell = "---";
             const suggestionCell = "---";
-            rows.push(`| ⚠️ ${issueCell} | 💡 ${suggestionCell} |`);
+            rows.push(`| ${issueCell} | ${suggestionCell} |`);
         } else {
             const max = Math.max(comment?.feedback?.length ?? 0, 1);
             for (let i = 0; i < max; i++) {
                 const iv = comment?.feedback?.[i]?.issue ?? "---";
                 const sv = comment?.feedback?.[i]?.suggestion ?? "---";
-                rows.push(`| ⚠️ ${iv} | 💡 ${sv} |`);
+                rows.push(`| ${iv} | ${sv} |`);
             }
         }
 
