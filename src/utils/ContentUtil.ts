@@ -12,9 +12,10 @@ Provide a detailed review of the following pull request, including code changes 
 Responded in Vietnamese and respond in JSON format with the following schema:
 - category: One of "SUGGESTION 🟦", "WARNING 🟨", "ERROR 🟥", "LGTM ✅"
 - summary: A detailed content of the review comment.
-- issues: The specific issues identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.
-- suggestions: The suggested solutions or improvements for code. Add emoji 💡 in the first line of every suggestion.
-- codeSnippet: A markdown-formatted suggested code related to the suggestions, if applicable. It should be concise and to the point.
+- feedback: An array of objects containing detailed feedback including:
+    - issue: The specific issue identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.
+    - suggestion: The suggested solution or improvement for code. Add emoji 💡 in the first line of every suggestion.
+- code: A markdown-formatted suggested code related to the suggestions, if applicable. It should be concise and to the point.
 - meta: An object containing metadata about the code review comment, including:
     - path: The file path of the code being reviewed.
     - line: The line number of the code being reviewed.
@@ -55,24 +56,35 @@ ${comment.summary}
 `;
 
     if (comment.category !== "LGTM ✅") {
-        const issueCell = comment.issues ?? "---";
-        const suggestionCell = comment.suggestions ?? "---";
+        const rows: string[] = [];
+        if (comment.feedback.length === 0) {
+            const issueCell = "---";
+            const suggestionCell = "---";
+            rows.push(`| ⚠️ ${issueCell} | 💡 ${suggestionCell} |`);
+        } else {
+            const max = Math.max(comment.feedback.length);
+            for (let i = 0; i < max; i++) {
+                const iv = comment.feedback[i]?.issue ?? "---";
+                const sv = comment.feedback[i]?.suggestion ?? "---";
+                rows.push(`| ⚠️ ${iv} | 💡 ${sv} |`);
+            }
+        }
 
         body += `
 ### 🛠️ Review Feedback
 
 | Issue                           | Suggestion |
 | ------------------------------- | ---------- |
-| ${issueCell} | ${suggestionCell} |
+${rows.join("\n")}
 
 ---
 `;
     }
 
-    if (comment.codeSnippet) {
+    if (comment.code) {
         body += `
 ### 🧱 Code Snippet
-${comment.codeSnippet}
+${comment.code}
 `;
 
     }

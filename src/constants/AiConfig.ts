@@ -22,17 +22,27 @@ export const geminiAiConfig = {
                     type: Type.STRING,
                     description: "A short and concise summary of the review comment.",
                 },
-                issues: {
-                    type: Type.STRING,
-                    description: "The specific issues identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.",
+                feedback: {
+                    type: Type.ARRAY,
+                    description: "An object containing detailed feedback including issues and suggestions.",
+                    items: {
+                        type: Type.OBJECT,
+                        properties: {
+                            issue: {
+                                type: Type.STRING,
+                                description: "The specific issue identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.",
+                            },
+                            suggestion: {
+                                type: Type.STRING,
+                                description: "The suggested solution or improvement for code. Add emoji 💡 in the first line of every suggestion.",
+                            },
+                        },
+                        required: ["issue", "suggestion"]
+                    },
                 },
-                suggestions: {
+                code: {
                     type: Type.STRING,
-                    description: "The suggested solutions or improvements for code. Add emoji 💡 in the first line of every suggestion.",
-                },
-                codeSnippet: {
-                    type: Type.STRING,
-                    description: "A markdown-formatted suggested code related to the solutions, if applicable.",
+                    description: "A markdown-formatted example code related to the suggestions, if applicable. It should be concise and to the point.",
                 },
                 meta: {
                     type: Type.OBJECT,
