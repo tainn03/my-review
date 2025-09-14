@@ -56,7 +56,7 @@ export const geminiAiConfig = {
                     required: ["path", "start_line", "line", "start_side", "side"]
                 },
             },
-            required: ["category", "summary", "issues", "suggestions", "meta"],
+            required: ["category", "summary", "meta"],
         },
     },
 };

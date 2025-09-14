@@ -57,15 +57,15 @@ ${comment.summary}
 
     if (comment.category !== "LGTM ✅") {
         const rows: string[] = [];
-        if (comment.feedback.length === 0) {
+        if (comment?.feedback?.length === 0) {
             const issueCell = "---";
             const suggestionCell = "---";
             rows.push(`| ⚠️ ${issueCell} | 💡 ${suggestionCell} |`);
         } else {
-            const max = Math.max(comment.feedback.length);
+            const max = Math.max(comment?.feedback?.length ?? 0, 1);
             for (let i = 0; i < max; i++) {
-                const iv = comment.feedback[i]?.issue ?? "---";
-                const sv = comment.feedback[i]?.suggestion ?? "---";
+                const iv = comment?.feedback?.[i]?.issue ?? "---";
+                const sv = comment?.feedback?.[i]?.suggestion ?? "---";
                 rows.push(`| ⚠️ ${iv} | 💡 ${sv} |`);
             }
         }
