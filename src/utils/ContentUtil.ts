@@ -24,7 +24,7 @@ Responded in Vietnamese and respond in JSON format with the following schema:
     - start_side: The starting side of the code being reviewed (LEFT or RIGHT).
 
 If there are multiple comments, return an array of objects.
-If everything is fine, return a single object with category "LGTM ✅" with summary "Looks good to me, no issues found." and empty other fields.
+If everything is fine, return a single object with category "LGTM ✅".
 
 Now review this diff:
 ${diff}
