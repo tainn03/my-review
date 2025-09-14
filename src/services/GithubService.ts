@@ -118,54 +118,6 @@ export async function postComment(
     commit_id: string,
     comment: ReviewComment
 ): Promise<void> {
-    // If path or start_line are missing/falsy, convert to a PR issue comment (event comment)
-    const hasPath = !!comment?.meta?.path;
-    const hasStartLine =
-        comment?.meta?.start_line !== undefined && !!comment.meta.start_line;
-
-    if (!hasPath || !hasStartLine) {
-        // Post as a regular PR comment (issue comment) instead of a review comment
-        await octokit.rest.issues.createComment({
-            owner,
-            repo,
-            event: 'COMMENT',
-            issue_number: pullNumber,
-            body,
-        });
-        return;
-    }
-
-    // Try to fetch the file patch (diff hunk) for this file in the PR.
-    let patch: string | null = null;
-    try {
-        const { data: files } = await octokit.rest.pulls.listFiles({
-            owner,
-            repo,
-            pull_number: pullNumber,
-        });
-        const normalizedTarget = (comment.meta.path || "").replace(/\\/g, "/");
-        const fileEntry = files.find(
-            (f: any) => (f.filename || "").replace(/\\/g, "/") === normalizedTarget
-        );
-        patch = fileEntry?.patch || null;
-    } catch (err) {
-        core.warning(`Failed to fetch PR files for diff_hunk: ${(err as Error).message}`);
-        patch = null;
-    }
-
-    if (!patch) {
-        // If we couldn't find a patch for the file, fallback to posting a regular PR comment
-        core.warning(`No patch/diff_hunk found for ${comment.meta.path}. Posting as a regular comment instead.`);
-        await octokit.rest.issues.createComment({
-            owner,
-            repo,
-            event: 'COMMENT',
-            issue_number: pullNumber,
-            body,
-        });
-        return;
-    }
-
     const commentPayload: Partial<CommentPayload> = {
         owner,
         repo,
@@ -183,27 +135,20 @@ export async function postComment(
     ) {
         commentPayload.start_line = comment.meta.start_line;
         commentPayload.start_side = comment.meta.start_side || comment.meta.side;
-    } else {
-        commentPayload.start_line = comment.meta.line;
-        commentPayload.start_side = comment.meta.side;
     }
 
-    // attach the diff hunk (patch) we fetched
-    (commentPayload as any).diff_hunk = patch;
-
-    // Try to post the review comment; if GitHub validation fails, fallback to a normal PR comment
     try {
         await octokit.request(
             "POST /repos/{owner}/{repo}/pulls/{pull_number}/comments",
             commentPayload as CommentPayload
         );
     } catch (error) {
-        core.warning(`Failed to post review comment, falling back to issue comment: ${(error as Error).message}`);
-        await octokit.rest.issues.createComment({
+        core.warning((error as Error).message);
+        await octokit.rest.pulls.createReview({
             owner,
             repo,
+            pull_number: pullNumber,
             event: 'COMMENT',
-            issue_number: pullNumber,
             body,
         });
     }
