@@ -118,6 +118,22 @@ export async function postComment(
     commit_id: string,
     comment: ReviewComment
 ): Promise<void> {
+    // If path or start_line are missing/falsy, convert to a PR issue comment (event comment)
+    const hasPath = !!comment?.meta?.path;
+    const hasStartLine =
+        comment?.meta?.start_line !== undefined && !!comment.meta.start_line;
+
+    if (!hasPath || !hasStartLine) {
+        // Post as a regular PR comment (issue comment) instead of a review comment
+        await octokit.rest.issues.createComment({
+            owner,
+            repo,
+            issue_number: pullNumber,
+            body,
+        });
+        return;
+    }
+
     const commentPayload: Partial<CommentPayload> = {
         owner,
         repo,
