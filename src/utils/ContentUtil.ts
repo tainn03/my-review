@@ -15,7 +15,6 @@ Responded in Vietnamese and respond in JSON format with the following schema:
 - feedback: An array of objects containing detailed feedback including:
     - issue: The specific issue identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.
     - suggestion: The suggested solution or improvement for code. Add emoji 💡 in the first line of every suggestion.
-- code: A markdown-formatted suggested code related to the suggestions, if applicable. It should be concise and to the point.
 - meta: An object containing metadata about the code review comment, including:
     - path: The file path of the code being reviewed.
     - line: The line number of the code being reviewed.
@@ -79,14 +78,6 @@ ${rows.join("\n")}
 
 ---
 `;
-    }
-
-    if (comment.code) {
-        body += `
-### 🧱 Code Snippet
-${comment.code}
-`;
-
     }
     return body;
 };

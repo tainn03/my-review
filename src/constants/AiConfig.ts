@@ -40,10 +40,6 @@ export const geminiAiConfig = {
                         required: ["issue", "suggestion"]
                     },
                 },
-                code: {
-                    type: Type.STRING,
-                    description: "A markdown-formatted example code related to the suggestions, if applicable. It should be concise and to the point.",
-                },
                 meta: {
                     type: Type.OBJECT,
                     properties: {
