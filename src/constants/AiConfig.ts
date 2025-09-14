@@ -24,15 +24,15 @@ export const geminiAiConfig = {
                 },
                 issues: {
                     type: Type.STRING,
-                    description: "A list of specific issues identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.",
+                    description: "The specific issues identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.",
                 },
                 suggestions: {
                     type: Type.STRING,
-                    description: "A list of suggested solutions or improvements for code. Add emoji 💡 in the first line of every suggestion.",
+                    description: "The suggested solutions or improvements for code. Add emoji 💡 in the first line of every suggestion.",
                 },
                 codeSnippet: {
                     type: Type.STRING,
-                    description: "A markdown-formatted suggested code snippet related to the suggestions, if applicable.",
+                    description: "A markdown-formatted suggested code related to the solutions, if applicable.",
                 },
                 meta: {
                     type: Type.OBJECT,
