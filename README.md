@@ -1,5 +1,4 @@
 <div align="center">
-
 # 🧠 my-review – AI Code Review Action
 
 AI-powered automated code review for GitHub Pull Requests using Google's Gemini models.
@@ -39,7 +38,7 @@ AI-powered automated code review for GitHub Pull Requests using Google's Gemini 
 
 ## 💡 Giới thiệu
 
-`my-review` là một GitHub Action giúp tự động phân tích diff của Pull Request và tạo các nhận xét (review comments) trực tiếp trên PR bằng AI (Google Gemini). Mục tiêu: tăng tốc độ review, phát hiện vấn đề style, bug logic, gợi ý cải thiện.
+`my-review` là một GitHub Action giúp tự động phân tích diff của Pull Request và tạo các nhận xét (review comments) trực tiếp trên PR bằng AI (Google Gemini). Mục tiêu: tăng tốc độ review, phát hiện vấn đề style, bug logic, gợi ý cải thiện. Các mức độ đánh giá bao gồm: SUGGESTION (đề xuất), WARNING (cảnh báo), ERROR (lỗi nghiêm trọng), LGTM (looks good to me).
 
 ## 🚀 Tính năng chính
 
@@ -90,26 +89,38 @@ Tạo file `.github/workflows/ai-review.yml` trong repo của bạn:
 ```yaml
 name: AI Code Review
 on:
-	pull_request:
-		types: [opened, synchronize, reopened]
-
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+  pull-requests: write
+  packages: read
 jobs:
-	review:
-		runs-on: ubuntu-latest
-		permissions:
-			contents: read
-			pull-requests: write
-		steps:
-			- uses: actions/checkout@v4
-			- name: AI Review
-				uses: tainn03/my-review@main
-				with:
-					github_token: ${{ secrets.GITHUB_TOKEN }}
-					gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-					model: gemini-1.5-pro
-					owner: ${{ github.repository_owner }}
-					repo: ${{ github.event.repository.name }}
-					pull_number: ${{ github.event.pull_request.number }}
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run review code in Docker container
+        run: |
+          set -e
+          docker pull ghcr.io/tainn03/my-review:latest
+          docker run --rm \
+            -e INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            -e INPUT_GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
+            -e INPUT_MODEL=gemini-2.5-flash \
+            -e INPUT_OWNER=${{ github.repository_owner }} \
+            -e INPUT_REPO=${{ github.event.repository.name }} \
+            -e INPUT_PULL_NUMBER=${{ github.event.pull_request.number }} \
+            ghcr.io/tainn03/my-review:latest
 ```
 
 ### Chạy bằng Docker image
@@ -117,13 +128,13 @@ jobs:
 ```bash
 docker pull ghcr.io/tainn03/my-review:latest
 docker run --rm \
-	-e INPUT_GITHUB_TOKEN=<gh_token> \
-	-e INPUT_GEMINI_API_KEY=<gemini_key> \
-	-e INPUT_MODEL=gemini-1.5-pro \
-	-e INPUT_OWNER=<owner> \
-	-e INPUT_REPO=<repo> \
-	-e INPUT_PULL_NUMBER=123 \
-	ghcr.io/tainn03/my-review:latest
+  -e INPUT_GITHUB_TOKEN=<gh_token> \
+  -e INPUT_GEMINI_API_KEY=<gemini_key> \
+  -e INPUT_MODEL=gemini-2.5-pro \
+  -e INPUT_OWNER=<owner> \
+  -e INPUT_REPO=<repo> \
+  -e INPUT_PULL_NUMBER=1 \
+  ghcr.io/tainn03/my-review:latest
 ```
 
 Nếu image là private trên GHCR, cần login:
@@ -139,34 +150,27 @@ Ví dụ workflow dùng Docker image (ít phụ thuộc action metadata):
 ```yaml
 name: AI Code Review (Docker)
 on:
-	pull_request:
-		types: [opened, synchronize, reopened]
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
-	review:
-		runs-on: ubuntu-latest
-		permissions:
-			contents: read
-			pull-requests: write
-		steps:
-			- uses: actions/checkout@v4
-			- name: (Optional) Login GHCR if private
-				if: ${{ vars.REVIEW_IMAGE_PRIVATE == 'true' }}
-				uses: docker/login-action@v3
-				with:
-					registry: ghcr.io
-					username: ${{ github.actor }}
-					password: ${{ secrets.GITHUB_TOKEN }}
-			- name: Run AI review
-				run: |
-					docker pull ghcr.io/tainn03/my-review:latest
-					docker run --rm \
-						-e INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
-						-e INPUT_GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
-						-e INPUT_MODEL=gemini-1.5-pro \
-						-e INPUT_OWNER=${{ github.repository_owner }} \
-						-e INPUT_REPO=${{ github.event.repository.name }} \
-						-e INPUT_PULL_NUMBER=${{ github.event.pull_request.number }} \
-						ghcr.io/tainn03/my-review:latest
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run AI review
+        run: |
+          docker pull ghcr.io/tainn03/my-review:latest
+          docker run --rm \
+            -e INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            -e INPUT_GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
+            -e INPUT_MODEL=gemini-1.5-pro \
+            -e INPUT_OWNER=${{ github.repository_owner }} \
+            -e INPUT_REPO=${{ github.event.repository.name }} \
+            -e INPUT_PULL_NUMBER=${{ github.event.pull_request.number }} \
+            ghcr.io/tainn03/my-review:latest
 ```
 
 ## 🧾 Biến môi trường / Inputs
@@ -194,8 +198,8 @@ git clone https://github.com/tainn03/my-review.git
 cd my-review
 npm install
 npm run build
-node dist/index.js \
-	# Cần export tạm biến môi trường hoặc mock core.getInput trong dev nếu muốn chạy tay.
+node dist/index.js
+# Cần export tạm biến môi trường hoặc mock core.getInput trong dev nếu muốn chạy tay.
 ```
 
 Trong thực tế `@actions/core.getInput` kỳ vọng inputs từ Action context. Khi dev local, bạn có thể tạo file `.env` và sửa `package.json` script hoặc viết script wrapper.

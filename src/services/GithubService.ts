@@ -137,8 +137,19 @@ export async function postComment(
         commentPayload.start_side = comment.meta.start_side || comment.meta.side;
     }
 
-    await octokit.request(
-        "POST /repos/{owner}/{repo}/pulls/{pull_number}/comments",
-        commentPayload as CommentPayload
-    );
+    try {
+        await octokit.request(
+            "POST /repos/{owner}/{repo}/pulls/{pull_number}/comments",
+            commentPayload as CommentPayload
+        );
+    } catch (error) {
+        core.warning((error as Error).message);
+        await octokit.rest.pulls.createReview({
+            owner,
+            repo,
+            pull_number: pullNumber,
+            event: 'COMMENT',
+            body,
+        });
+    }
 }

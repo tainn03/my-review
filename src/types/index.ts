@@ -1,9 +1,13 @@
 export type ReviewComment = {
     category: "SUGGESTION 🔵" | "MINOR 🟡" | "MAJOR 🟠" | "CRITICAL 🔴" | "LGTM ✅";
     summary: string;
-    issues: string;
-    suggestions: string;
+    feedback?: Feedback[];
     meta: Meta;
+};
+
+export type Feedback = {
+    issue?: string;
+    suggestion?: string;
 };
 
 export type Meta = {

@@ -15,20 +15,30 @@ export const geminiAiConfig = {
             properties: {
                 category: {
                     type: Type.STRING,
-                    enum: ["SUGGESTION 🟦", "MINOR 🟨", "MAJOR 🟧", "CRITICAL 🟥", "LGTM ✅"],
+                    enum: ["SUGGESTION 🟦", "WARNING 🟨", "ERROR 🟥", "LGTM ✅"],
                     description: "The review category indicating the severity or approval level of the comment. 'LGTM ✅' indicates no changes needed, just use if everything looks good and no issues found.",
                 },
                 summary: {
                     type: Type.STRING,
-                    description: "A detailed content of the review comment.",
+                    description: "A short and concise summary of the review comment.",
                 },
-                issues: {
-                    type: Type.STRING,
-                    description: "A list of specific issues identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.",
-                },
-                suggestions: {
-                    type: Type.STRING,
-                    description: "A list of suggested solutions or improvements and code snippets if applicable. Add emoji 💡 in the first line of every suggestion.",
+                feedback: {
+                    type: Type.ARRAY,
+                    description: "An object containing detailed feedback including issues and suggestions.",
+                    items: {
+                        type: Type.OBJECT,
+                        properties: {
+                            issue: {
+                                type: Type.STRING,
+                                description: "The specific issue identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.",
+                            },
+                            suggestion: {
+                                type: Type.STRING,
+                                description: "The suggested solution or improvement for code. Add emoji 💡 in the first line of every suggestion.",
+                            },
+                        },
+                        required: ["issue", "suggestion"]
+                    },
                 },
                 meta: {
                     type: Type.OBJECT,
@@ -42,7 +52,7 @@ export const geminiAiConfig = {
                     required: ["path", "start_line", "line", "start_side", "side"]
                 },
             },
-            required: ["category", "summary", "issues", "suggestions", "meta"],
+            required: ["category", "summary", "meta"],
         },
     },
 };
