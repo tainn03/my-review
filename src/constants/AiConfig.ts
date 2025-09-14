@@ -20,7 +20,7 @@ export const geminiAiConfig = {
                 },
                 summary: {
                     type: Type.STRING,
-                    description: "A detailed content of the review comment.",
+                    description: "A short and concise summary of the review comment.",
                 },
                 issues: {
                     type: Type.STRING,
@@ -29,6 +29,10 @@ export const geminiAiConfig = {
                 suggestions: {
                     type: Type.STRING,
                     description: "A list of suggested solutions or improvements for code. Add emoji 💡 in the first line of every suggestion.",
+                },
+                codeSnippet: {
+                    type: Type.STRING,
+                    description: "A code snippet related to the suggested solutions or improvements for code. Use before/after patterns if applicable.",
                 },
                 meta: {
                     type: Type.OBJECT,

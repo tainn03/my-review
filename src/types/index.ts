@@ -3,6 +3,7 @@ export type ReviewComment = {
     summary: string;
     issues: string;
     suggestions: string;
+    codeSnippet?: string;
     meta: Meta;
 };
 

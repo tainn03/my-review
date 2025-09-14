@@ -48,7 +48,7 @@ export const generateCommentBody = (comment: ReviewComment) => {
 
 </details>
 
-## 📌 Summary
+## 📃 Summary
 
 ${comment.summary}
 `;
@@ -58,7 +58,7 @@ ${comment.summary}
         const suggestionCell = comment.suggestions ?? "";
 
         body += `
-### 🔑 Code Review Feedback
+### 🛠️ Review Feedback
 
 | Issue                           | Suggestion |
 | ------------------------------- | ---------- |
@@ -68,5 +68,19 @@ ${comment.summary}
 `;
     }
 
+    if (comment.codeSnippet) {
+        body += `
+<details>
+<summary>🧱 Code Snippet Reference</summary>
+
+\`\`\`
+${comment.codeSnippet}
+\`\`\`
+
+</details>
+---
+`;
+
+    }
     return body;
 };
