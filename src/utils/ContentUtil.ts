@@ -14,6 +14,7 @@ Responded in Vietnamese and respond in JSON format with the following schema:
 - summary: A detailed content of the review comment.
 - issues: A list of specific issues identified in the code. It should be concise and to the point. Add emoji ⚠️ in the first line of every issue.
 - suggestions: A list of suggested solutions or improvements for code. Add emoji 💡 in the first line of every suggestion.
+- codeSnippet: A markdown-formatted suggested code snippet related to the suggestions, if applicable. It should be concise and to the point with before/after pattern.
 - meta: An object containing metadata about the code review comment, including:
     - path: The file path of the code being reviewed.
     - line: The line number of the code being reviewed.
@@ -48,7 +49,7 @@ export const generateCommentBody = (comment: ReviewComment) => {
 
 </details>
 
-## 📃 Summary
+### 📃 Summary
 
 ${comment.summary}
 `;
@@ -70,15 +71,8 @@ ${comment.summary}
 
     if (comment.codeSnippet) {
         body += `
-<details>
-<summary>🧱 Code Snippet Reference</summary>
-
-\`\`\`
+### 🧱 Code Snippet Reference
 ${comment.codeSnippet}
-\`\`\`
-
-</details>
----
 `;
 
     }

@@ -32,7 +32,7 @@ export const geminiAiConfig = {
                 },
                 codeSnippet: {
                     type: Type.STRING,
-                    description: "A code snippet related to the suggested solutions or improvements for code. Use before/after patterns if applicable.",
+                    description: "A markdown-formatted suggested code snippet related to the suggestions, if applicable.",
                 },
                 meta: {
                     type: Type.OBJECT,
